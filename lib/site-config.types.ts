@@ -26,4 +26,7 @@ export interface SiteConfig {
     /** Show product reviews / ratings */
     reviews: boolean;
   };
+
+  /** Override the homepage stats bar. Falls back to marketplace defaults if omitted. */
+  stats?: { value: string; label: string }[];
 }

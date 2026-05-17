@@ -1,40 +1,34 @@
-/**
- * site.config.ts — edit this file when deploying for a new client.
- *
- * MODE GUIDE
- * ----------
- * marketplace   Multi-producer platform. Full admin, producer onboarding,
- *               Stripe Connect commission splits. Sell to farmers market
- *               organisers, collectives, or aggregators.
- *
- * single-store  One brand, one producer's products. Direct Stripe checkout
- *               (no commission). Sell to individual farms, bakeries, etc.
- */
-
 import type { SiteConfig } from "@/lib/site-config.types";
 
 const config: SiteConfig = {
-  mode: "marketplace",
+  mode: "single-store",
 
   brand: {
-    name: "MarketStall",
-    tagline: "Your local market, delivered",
+    name: "Fieldgate Farm Shop",
+    tagline: "Seasonal vegetables, salads & preserves grown on our farm",
     description:
-      "Connecting East Midlands farmers and artisan producers directly with people who love great food. Every order supports a local family.",
-    email: "hello@marketstall.co.uk",
-    location: "East Midlands",
-    foundedYear: 2024,
-    socialInstagram: "https://instagram.com",
-    socialFacebook: "https://facebook.com",
+      "We grow over 60 varieties of vegetable, salad, and herb on our Leicestershire market garden, harvested the morning it's dispatched. No middlemen, no distribution centres — straight from the field to your door.",
+    email: "hello@fieldgatefarm.co.uk",
+    location: "Market Harborough, Leicestershire",
+    foundedYear: 2009,
+    socialInstagram: "https://instagram.com/fieldgatefarm",
+    socialFacebook: "https://facebook.com/fieldgatefarm",
   },
 
   features: {
-    producerOnboarding: true,
-    adminPanel: true,
-    multiProducer: true,
-    stripeConnect: true,
+    producerOnboarding: false,
+    adminPanel: false,
+    multiProducer: false,
+    stripeConnect: false,
     reviews: true,
   },
+
+  stats: [
+    { value: "60+", label: "Varieties Grown" },
+    { value: "8 Acres", label: "Market Garden" },
+    { value: "4.9★", label: "Average Rating" },
+    { value: "Est. 2009", label: "Leicestershire" },
+  ],
 };
 
 export default config;

@@ -68,7 +68,7 @@ export default function HomePage() {
       {/* ── HERO ─────────────────────────────────────────────── */}
       <section className="relative flex min-h-screen items-center justify-center overflow-hidden">
         <Image
-          src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1600&q=85"
+          src="/images/hero.jpg"
           alt="Fresh seasonal vegetables harvested from the market garden"
           fill
           priority
@@ -188,7 +188,7 @@ export default function HomePage() {
         <section className="section-pad relative overflow-hidden bg-forest-950">
           <div className="absolute inset-0 opacity-10">
             <Image
-              src="https://images.unsplash.com/photo-1518843875459-f738682238a6?w=1600&q=60"
+              src="/images/hero.jpg"
               alt=""
               fill
               className="object-cover object-center"
@@ -218,7 +218,7 @@ export default function HomePage() {
               </div>
               <div className="relative h-80 overflow-hidden rounded-3xl lg:h-[480px]">
                 <Image
-                  src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80"
+                  src="/images/hero.jpg"
                   alt="Rows of vegetables growing in the Fieldgate Farm polytunnel"
                   fill
                   className="object-cover object-center"
@@ -350,7 +350,7 @@ export default function HomePage() {
       <section className="relative overflow-hidden bg-forest-800 py-24">
         <div className="absolute inset-0 opacity-10">
           <Image
-            src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=1600&q=60"
+            src="/images/hero.jpg"
             alt=""
             fill
             className="object-cover"

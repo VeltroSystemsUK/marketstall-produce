@@ -19,9 +19,8 @@ export const MOCK_PRODUCERS: Producer[] = [
     },
     categories: ["vegetables", "salads", "preserves"],
     images: {
-      banner:
-        "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400&q=80",
-      logo: "https://images.unsplash.com/photo-1518843875459-f738682238a6?w=200&q=80",
+      banner: "/images/hero.jpg",
+      logo: "/images/heritage-tomatoes.jpg",
     },
     status: "approved",
     commissionRate: 0,
@@ -51,7 +50,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unit: "large box (10–12 items, serves 4)",
     stock: 60,
     images: [
-      "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80",
+      "/images/veg-box.jpg",
     ],
     dietary: ["vegan", "gluten-free", "dairy-free"],
     allergens: [],
@@ -74,7 +73,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unit: "500g mixed selection",
     stock: 40,
     images: [
-      "https://images.unsplash.com/photo-1518843875459-f738682238a6?w=800&q=80",
+      "/images/heritage-tomatoes.jpg",
     ],
     dietary: ["vegan", "gluten-free", "dairy-free"],
     allergens: [],
@@ -97,7 +96,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unit: "dozen eggs",
     stock: 50,
     images: [
-      "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80",
+      "/images/eggs.jpg",
     ],
     dietary: ["gluten-free", "dairy-free"],
     allergens: ["eggs"],
@@ -165,7 +164,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unit: "large bunch (approx. 350g)",
     stock: 45,
     images: [
-      "https://images.unsplash.com/photo-1518843875459-f738682238a6?w=800&q=80",
+      "/images/rainbow-chard.jpg",
     ],
     dietary: ["vegan", "gluten-free", "dairy-free"],
     allergens: [],
@@ -269,8 +268,7 @@ export const MOCK_ORDERS: Order[] = [
         price: 2200,
         quantity: 1,
         unit: "large box (10–12 items)",
-        imageUrl:
-          "https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80",
+        imageUrl: "/images/hero.jpg",
       },
       {
         productId: "prod-3",
@@ -280,8 +278,7 @@ export const MOCK_ORDERS: Order[] = [
         price: 450,
         quantity: 2,
         unit: "dozen eggs",
-        imageUrl:
-          "https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80",
+        imageUrl: "/images/hero.jpg",
       },
     ],
     producerIds: ["producer-1"],

@@ -119,7 +119,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unit: "180g jar",
     stock: 30,
     images: [
-      "https://images.unsplash.com/photo-1518843875459-f738682238a6?w=800&q=80",
+      "/images/rainbow-chard.jpg",
     ],
     dietary: ["gluten-free", "vegetarian"],
     allergens: ["dairy", "nuts"],
@@ -142,7 +142,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unit: "approx. 120g bag",
     stock: 70,
     images: [
-      "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80",
+      "/images/veg-box.jpg",
     ],
     dietary: ["vegan", "gluten-free", "dairy-free"],
     allergens: [],
@@ -164,7 +164,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unit: "large bunch (approx. 350g)",
     stock: 45,
     images: [
-      "/images/rainbow-chard.jpg",
+      "/images/heritage-tomatoes.jpg",
     ],
     dietary: ["vegan", "gluten-free", "dairy-free"],
     allergens: [],
@@ -186,7 +186,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unit: "3 bulbs",
     stock: 35,
     images: [
-      "https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&q=80",
+      "/images/eggs.jpg",
     ],
     dietary: ["vegan", "gluten-free", "dairy-free"],
     allergens: [],
@@ -208,7 +208,7 @@ export const MOCK_PRODUCTS: Product[] = [
     unit: "approx. 50g mixed bag",
     stock: 40,
     images: [
-      "https://images.unsplash.com/photo-1518843875459-f738682238a6?w=800&q=80",
+      "/images/rainbow-chard.jpg",
     ],
     dietary: ["vegan", "gluten-free", "dairy-free"],
     allergens: [],

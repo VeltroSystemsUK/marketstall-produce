@@ -78,11 +78,6 @@ export default function HomePage() {
         <div className="gradient-hero absolute inset-0" />
 
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center text-white">
-          <div className="hero-animate delay-100 mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-medium backdrop-blur-sm">
-            <Sun className="h-3.5 w-3.5 text-harvest-400" />
-            {config.brand.location} · Harvested Today · Est.{" "}
-            {config.brand.foundedYear}
-          </div>
           <h1
             data-demo-edit="hero-headline"
             className="font-display hero-animate delay-200 mb-6 text-5xl font-bold leading-tight text-balance sm:text-6xl lg:text-7xl">

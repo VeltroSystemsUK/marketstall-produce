@@ -109,6 +109,106 @@ const THEMES = [
       "--color-earth-50": "#f2f0e8",
     },
   },
+  {
+    id: "terracotta",
+    label: "Terracotta Clay",
+    dot: "#c0614a",
+    gradient:
+      "rgba(120,40,28,0.92) 0%, rgba(160,65,45,0.74) 50%, rgba(192,97,74,0.38) 100%",
+    vars: {
+      "--color-forest-50": "#fef4f1",
+      "--color-forest-100": "#fde4dc",
+      "--color-forest-300": "#e8957e",
+      "--color-forest-700": "#a8432c",
+      "--color-forest-800": "#7a2f1e",
+      "--color-forest-950": "#3d1208",
+      "--color-harvest-400": "#d97b60",
+      "--color-harvest-500": "#c0614a",
+      "--color-harvest-600": "#a04030",
+      "--color-cream": "#fef4f1",
+      "--color-earth-50": "#fdeee9",
+    },
+  },
+  {
+    id: "sage",
+    label: "Sage & Cream",
+    dot: "#6b8f71",
+    gradient:
+      "rgba(36,64,42,0.92) 0%, rgba(60,94,68,0.74) 50%, rgba(107,143,113,0.38) 100%",
+    vars: {
+      "--color-forest-50": "#f1f5f2",
+      "--color-forest-100": "#dce9de",
+      "--color-forest-300": "#9bbfa1",
+      "--color-forest-700": "#4a7051",
+      "--color-forest-800": "#2e4d34",
+      "--color-forest-950": "#132418",
+      "--color-harvest-400": "#88b18f",
+      "--color-harvest-500": "#6b8f71",
+      "--color-harvest-600": "#52725a",
+      "--color-cream": "#f5f8f5",
+      "--color-earth-50": "#edf4ee",
+    },
+  },
+  {
+    id: "slate",
+    label: "Slate Blue",
+    dot: "#4a6fa5",
+    gradient:
+      "rgba(22,38,68,0.92) 0%, rgba(38,62,108,0.74) 50%, rgba(74,111,165,0.38) 100%",
+    vars: {
+      "--color-forest-50": "#f0f3f8",
+      "--color-forest-100": "#d4deed",
+      "--color-forest-300": "#7e9ec5",
+      "--color-forest-700": "#2e5494",
+      "--color-forest-800": "#1a3566",
+      "--color-forest-950": "#0a1630",
+      "--color-harvest-400": "#6e98c0",
+      "--color-harvest-500": "#4a6fa5",
+      "--color-harvest-600": "#355788",
+      "--color-cream": "#f0f4f9",
+      "--color-earth-50": "#e8eef6",
+    },
+  },
+  {
+    id: "rose",
+    label: "Rose Petal",
+    dot: "#c2667d",
+    gradient:
+      "rgba(96,28,48,0.92) 0%, rgba(140,50,75,0.74) 50%, rgba(194,102,125,0.38) 100%",
+    vars: {
+      "--color-forest-50": "#fef0f3",
+      "--color-forest-100": "#fdd6de",
+      "--color-forest-300": "#e898ac",
+      "--color-forest-700": "#a63d57",
+      "--color-forest-800": "#782b3e",
+      "--color-forest-950": "#3a0f1c",
+      "--color-harvest-400": "#d4849a",
+      "--color-harvest-500": "#c2667d",
+      "--color-harvest-600": "#a04060",
+      "--color-cream": "#fff5f7",
+      "--color-earth-50": "#fde8ed",
+    },
+  },
+  {
+    id: "marigold",
+    label: "Marigold",
+    dot: "#e8a020",
+    gradient:
+      "rgba(100,56,8,0.92) 0%, rgba(150,88,12,0.74) 50%, rgba(232,160,32,0.38) 100%",
+    vars: {
+      "--color-forest-50": "#fffbef",
+      "--color-forest-100": "#fef0c0",
+      "--color-forest-300": "#f8cc60",
+      "--color-forest-700": "#a86018",
+      "--color-forest-800": "#7a4010",
+      "--color-forest-950": "#3a1a04",
+      "--color-harvest-400": "#f0b840",
+      "--color-harvest-500": "#e8a020",
+      "--color-harvest-600": "#c87c10",
+      "--color-cream": "#fffbf0",
+      "--color-earth-50": "#fef6e0",
+    },
+  },
 ];
 
 // ── Font pairs ────────────────────────────────────────────────────────────────
@@ -116,14 +216,12 @@ const FONTS = [
   {
     id: "classic",
     label: "Classic",
-    preview: "Aa",
     display: "var(--font-libre-baskerville), Georgia, serif",
     body: "var(--font-source-sans-3), system-ui, sans-serif",
   },
   {
     id: "elegant",
     label: "Elegant",
-    preview: "Aa",
     googleUrl:
       "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Lato:wght@400;700&display=swap",
     display: "'Cormorant Garamond', Palatino, serif",
@@ -132,7 +230,6 @@ const FONTS = [
   {
     id: "modern",
     label: "Modern",
-    preview: "Aa",
     googleUrl:
       "https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap",
     display: "'Outfit', system-ui, sans-serif",
@@ -141,11 +238,42 @@ const FONTS = [
   {
     id: "rustic",
     label: "Rustic",
-    preview: "Aa",
     googleUrl:
       "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Nunito:wght@400;600;700&display=swap",
     display: "'Playfair Display', Georgia, serif",
     body: "'Nunito', system-ui, sans-serif",
+  },
+  {
+    id: "editorial",
+    label: "Editorial",
+    googleUrl:
+      "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Jost:wght@400;500;600&display=swap",
+    display: "'Fraunces', Georgia, serif",
+    body: "'Jost', system-ui, sans-serif",
+  },
+  {
+    id: "refined",
+    label: "Refined",
+    googleUrl:
+      "https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;700&display=swap",
+    display: "'DM Serif Display', Georgia, serif",
+    body: "'DM Sans', system-ui, sans-serif",
+  },
+  {
+    id: "literary",
+    label: "Literary",
+    googleUrl:
+      "https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;0,700;1,400&family=Mulish:wght@400;600;700&display=swap",
+    display: "'Spectral', Georgia, serif",
+    body: "'Mulish', system-ui, sans-serif",
+  },
+  {
+    id: "futuristic",
+    label: "Futuristic",
+    googleUrl:
+      "https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;700&display=swap",
+    display: "'Syne', system-ui, sans-serif",
+    body: "'Inter', system-ui, sans-serif",
   },
 ];
 
@@ -414,11 +542,11 @@ export default function DemoEditor() {
         }
         .demo-panel-label { font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
         .demo-panel-sublabel { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 8px; }
-        .demo-swatches { display: flex; gap: 8px; }
+        .demo-swatches { display: grid; grid-template-columns: repeat(5, 28px); gap: 8px; }
         .demo-swatch { width: 28px; height: 28px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: all 0.15s; }
         .demo-swatch:hover { transform: scale(1.15); }
         .demo-swatch-active { border-color: white; transform: scale(1.15); }
-        .demo-font-list { display: flex; flex-direction: column; gap: 4px; }
+        .demo-font-list { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
         .demo-font-btn { text-align: left; padding: 7px 10px; border-radius: 6px; border: 1px solid transparent; background: transparent; color: rgba(255,255,255,0.7); font-size: 14px; cursor: pointer; transition: all 0.15s; }
         .demo-font-btn:hover { background: rgba(255,255,255,0.08); color: white; }
         .demo-font-btn-active { background: rgba(99,102,241,0.2); border-color: rgba(99,102,241,0.4); color: white; }

@@ -107,11 +107,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <div className="h-10 w-6 rounded-full border-2 border-white/40 p-1">
-            <div className="h-2 w-full rounded-full bg-white/60" />
-          </div>
-        </div>
+
       </section>
 
       {/* ── STATS BAR ─────────────────────────────────────────── */}

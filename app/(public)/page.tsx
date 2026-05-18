@@ -78,20 +78,24 @@ export default function HomePage() {
         <div className="gradient-hero absolute inset-0" />
 
         <div className="relative z-10 mx-auto max-w-4xl px-4 text-center text-white">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-medium backdrop-blur-sm">
+          <div className="hero-animate delay-100 mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm font-medium backdrop-blur-sm">
             <Sun className="h-3.5 w-3.5 text-harvest-400" />
             {config.brand.location} · Harvested Today · Est.{" "}
             {config.brand.foundedYear}
           </div>
-          <h1 className="font-display mb-6 text-5xl font-bold leading-tight text-balance sm:text-6xl lg:text-7xl">
+          <h1
+            data-demo-edit="hero-headline"
+            className="font-display hero-animate delay-200 mb-6 text-5xl font-bold leading-tight text-balance sm:text-6xl lg:text-7xl">
             Food that tastes
             <span className="block italic text-harvest-400">of the field.</span>
           </h1>
-          <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-white/85 sm:text-xl">
+          <p
+            data-demo-edit="hero-tagline"
+            className="hero-animate delay-300 mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-white/85 sm:text-xl">
             {config.brand.tagline}. Harvested before dawn, packed by hand, and
             at your door before you&apos;ve thought about dinner.
           </p>
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+          <div className="hero-animate delay-450 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Link
               href="/shop"
               className="inline-flex items-center gap-2 rounded-2xl bg-harvest-500 px-8 py-4 text-base font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-harvest-600 hover:shadow-xl"
@@ -114,8 +118,8 @@ export default function HomePage() {
       <section className="bg-forest-800 py-8">
         <div className="mx-auto max-w-5xl px-4">
           <dl className="grid grid-cols-2 gap-6 md:grid-cols-4">
-            {STATS.map((stat) => (
-              <div key={stat.label} className="text-center">
+            {STATS.map((stat, i) => (
+              <div key={stat.label} data-reveal data-reveal-delay={i * 80} className="text-center">
                 <dt className="font-display text-3xl font-bold text-harvest-400">
                   {stat.value}
                 </dt>
@@ -146,8 +150,10 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {FEATURED_PRODUCTS.map((product) => (
-              <ProductCard key={product.id} product={product} />
+            {FEATURED_PRODUCTS.map((product, i) => (
+              <div key={product.id} data-reveal data-reveal-delay={i * 80}>
+                <ProductCard product={product} />
+              </div>
             ))}
           </div>
           <div className="mt-8 text-center sm:hidden">
@@ -238,7 +244,7 @@ export default function HomePage() {
           </div>
           <div className="grid gap-8 md:grid-cols-3">
             {HOW_IT_WORKS.map((step, idx) => (
-              <div key={step.title} className="flex flex-col items-start">
+              <div key={step.title} data-reveal data-reveal-delay={idx * 100} className="flex flex-col items-start">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-forest-100">
                   <step.icon className="h-6 w-6 text-forest-700" />
                 </div>
@@ -317,9 +323,11 @@ export default function HomePage() {
             </h2>
           </div>
           <div className="grid gap-6 md:grid-cols-3">
-            {MOCK_REVIEWS.map((review) => (
+            {MOCK_REVIEWS.map((review, i) => (
               <div
                 key={review.id}
+                data-reveal
+                data-reveal-delay={i * 80}
                 className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-black/5"
               >
                 <div className="mb-3 flex">
@@ -352,8 +360,10 @@ export default function HomePage() {
             className="object-cover"
           />
         </div>
-        <div className="relative mx-auto max-w-3xl px-4 text-center">
-          <h2 className="font-display mb-4 text-4xl font-bold text-white sm:text-5xl">
+        <div data-reveal className="relative mx-auto max-w-3xl px-4 text-center">
+          <h2
+            data-demo-edit="cta-headline"
+            className="font-display mb-4 text-4xl font-bold text-white sm:text-5xl">
             Taste what vegetables are supposed to taste like.
           </h2>
           <p className="mb-8 text-lg text-forest-300">

@@ -7,7 +7,6 @@ import {
   ShoppingBasket,
   Menu,
   X,
-  Search,
   User,
   ChevronDown,
   Store,
@@ -79,23 +78,9 @@ export default function Header() {
           <span>{config.brand.name}</span>
         </Link>
 
-        {/* Desktop nav */}
-        <nav className="hidden items-center gap-8 md:flex">
-          <Link
-            href="/shop"
-            className={cn(
-              "text-sm font-medium transition-colors",
-              transparent
-                ? "text-white/90 hover:text-white"
-                : "text-gray-600 hover:text-forest-700",
-              pathname === "/shop" &&
-                !transparent &&
-                "font-semibold text-forest-700",
-            )}
-          >
-            Shop
-          </Link>
-          {config.features.multiProducer && (
+        {/* Desktop nav — only rendered for multi-producer builds */}
+        {config.features.multiProducer && (
+          <nav className="hidden items-center gap-8 md:flex">
             <Link
               href="/producers"
               className={cn(
@@ -110,48 +95,50 @@ export default function Header() {
             >
               Producers
             </Link>
-          )}
-          {config.features.multiProducer && user?.role === "producer" && (
-            <Link
-              href="/producer/dashboard"
-              className={cn(
-                "text-sm font-medium transition-colors",
-                transparent
-                  ? "text-white/90 hover:text-white"
-                  : "text-gray-600 hover:text-forest-700",
-              )}
-            >
-              My Stall
-            </Link>
-          )}
-          {config.features.adminPanel && user?.role === "admin" && (
-            <Link
-              href="/admin"
-              className={cn(
-                "text-sm font-medium transition-colors",
-                transparent
-                  ? "text-white/90 hover:text-white"
-                  : "text-gray-600 hover:text-forest-700",
-              )}
-            >
-              Admin
-            </Link>
-          )}
-        </nav>
+            {user?.role === "producer" && (
+              <Link
+                href="/producer/dashboard"
+                className={cn(
+                  "text-sm font-medium transition-colors",
+                  transparent
+                    ? "text-white/90 hover:text-white"
+                    : "text-gray-600 hover:text-forest-700",
+                )}
+              >
+                My Stall
+              </Link>
+            )}
+            {config.features.adminPanel && user?.role === "admin" && (
+              <Link
+                href="/admin"
+                className={cn(
+                  "text-sm font-medium transition-colors",
+                  transparent
+                    ? "text-white/90 hover:text-white"
+                    : "text-gray-600 hover:text-forest-700",
+                )}
+              >
+                Admin
+              </Link>
+            )}
+          </nav>
+        )}
 
         {/* Right actions */}
         <div className="flex items-center gap-2 sm:gap-3">
           <Link
             href="/shop"
-            aria-label="Search"
             className={cn(
-              "rounded-full p-2 transition-colors",
+              "hidden text-sm font-medium transition-colors md:block",
               transparent
-                ? "text-white hover:bg-white/10"
-                : "text-gray-600 hover:bg-gray-100 hover:text-forest-700",
+                ? "text-white/90 hover:text-white"
+                : "text-gray-600 hover:text-forest-700",
+              pathname === "/shop" &&
+                !transparent &&
+                "font-semibold text-forest-700",
             )}
           >
-            <Search className="h-5 w-5" />
+            Shop
           </Link>
 
           {/* Basket */}

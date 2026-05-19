@@ -2,7 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Palette, Type, RotateCcw, Pencil } from "lucide-react";
+import {
+  Palette,
+  Type,
+  RotateCcw,
+  Pencil,
+  Camera,
+  X,
+  Wand2,
+} from "lucide-react";
 
 const TOKEN = process.env.NEXT_PUBLIC_DEMO_TOKEN ?? "veltrodemo";
 const STORAGE_KEY = "veltro-demo-v1";
@@ -277,11 +285,12 @@ const FONTS = [
   },
 ];
 
-// ── Saved state type ──────────────────────────────────────────────────────────
+// ── Saved state ───────────────────────────────────────────────────────────────
 type Saved = {
   themeId: string;
   fontId: string;
   texts: Record<string, string>;
+  images: Record<string, string>;
 };
 
 function load(): Saved {
@@ -314,7 +323,6 @@ function applyFont(fontId: string) {
   const root = document.documentElement;
   root.style.setProperty("--font-display", font.display);
   root.style.setProperty("--font-sans", font.body);
-
   if (font.googleUrl && !document.getElementById(`gf-${fontId}`)) {
     const link = document.createElement("link");
     link.id = `gf-${fontId}`;
@@ -331,14 +339,60 @@ function applyTexts(texts: Record<string, string>) {
   });
 }
 
+function swapImage(key: string, src: string) {
+  const container = document.querySelector<HTMLElement>(
+    `[data-demo-img="${key}"]`,
+  );
+  if (!container) return;
+  const img = container.querySelector("img") as HTMLImageElement | null;
+  if (!img) return;
+  img.src = src;
+  img.srcset = "";
+  img.sizes = "";
+}
+
+function applyImages(images: Record<string, string>) {
+  Object.entries(images).forEach(([key, src]) => swapImage(key, src));
+}
+
+async function fileToDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 export default function DemoEditor() {
   const searchParams = useSearchParams();
   const [active, setActive] = useState(false);
   const [panel, setPanel] = useState<"theme" | "font" | null>(null);
   const [editMode, setEditMode] = useState(false);
+  const [imgMode, setImgMode] = useState(false);
   const [themeId, setThemeId] = useState("earth");
   const [fontId, setFontId] = useState("classic");
+
+  // Image picker
+  const [imgPicker, setImgPicker] = useState<{
+    key: string;
+    label: string;
+  } | null>(null);
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
+
+  const fileRef = useRef<HTMLInputElement>(null);
   const blurRefs = useRef<Map<string, () => void>>(new Map());
 
   // Activate on ?dm=TOKEN
@@ -359,7 +413,56 @@ export default function DemoEditor() {
       applyFont(s.fontId);
     }
     if (s.texts) applyTexts(s.texts);
+    if (s.images) applyImages(s.images);
   }, [active]);
+
+  // Image edit mode — inject clickable overlays on [data-demo-img] elements
+  useEffect(() => {
+    if (!active) return;
+    const els = document.querySelectorAll<HTMLElement>("[data-demo-img]");
+
+    if (imgMode) {
+      els.forEach((el) => {
+        const overlay = document.createElement("div");
+        overlay.className = "demo-img-overlay";
+        overlay.setAttribute("data-demo-img-overlay", "true");
+        overlay.innerHTML = `<span class="demo-img-overlay-label">📷 Change photo</span>`;
+        el.appendChild(overlay);
+      });
+    } else {
+      document
+        .querySelectorAll("[data-demo-img-overlay]")
+        .forEach((o) => o.remove());
+    }
+
+    return () => {
+      document
+        .querySelectorAll("[data-demo-img-overlay]")
+        .forEach((o) => o.remove());
+    };
+  }, [imgMode, active]);
+
+  // Capture-phase click to open image picker
+  useEffect(() => {
+    if (!active || !imgMode) return;
+
+    const handleClick = (e: Event) => {
+      const container = (e.target as HTMLElement).closest<HTMLElement>(
+        "[data-demo-img]",
+      );
+      if (!container) return;
+      e.preventDefault();
+      e.stopPropagation();
+      const key = container.dataset.demoImg!;
+      const label = container.dataset.demoImgLabel ?? key;
+      setImgPicker({ key, label });
+      setAiPrompt("");
+      setAiError("");
+    };
+
+    document.addEventListener("click", handleClick, true);
+    return () => document.removeEventListener("click", handleClick, true);
+  }, [active, imgMode]);
 
   // Attach / detach contentEditable on editMode toggle
   useEffect(() => {
@@ -398,13 +501,118 @@ export default function DemoEditor() {
     };
   }, [editMode, active]);
 
+  async function handleFileUpload(file: File) {
+    if (!imgPicker) return;
+    const dataUrl = await fileToDataUrl(file);
+    swapImage(imgPicker.key, dataUrl);
+    const s = load();
+    save({ images: { ...(s.images ?? {}), [imgPicker.key]: dataUrl } });
+    setImgPicker(null);
+  }
+
+  async function handleAIGenerate() {
+    if (!imgPicker || !aiPrompt.trim()) return;
+    setAiLoading(true);
+    setAiError("");
+    try {
+      const fullPrompt = `${aiPrompt.trim()}, professional food photography, natural light, high quality`;
+      const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?width=800&height=600&nologo=1&model=flux`;
+      const res = await fetch(url);
+      if (!res.ok) throw new Error("bad response");
+      const blob = await res.blob();
+      const dataUrl = await blobToDataUrl(blob);
+      swapImage(imgPicker.key, dataUrl);
+      const s = load();
+      save({ images: { ...(s.images ?? {}), [imgPicker.key]: dataUrl } });
+      setImgPicker(null);
+    } catch {
+      setAiError("Generation failed — check your connection and try again.");
+    } finally {
+      setAiLoading(false);
+    }
+  }
+
   if (!active) return null;
 
   const currentTheme = THEMES.find((t) => t.id === themeId)!;
 
   return (
     <>
-      {/* Panels */}
+      {/* ── Image picker modal ─────────────────────────────────── */}
+      {imgPicker && (
+        <div
+          className="demo-modal-backdrop"
+          onClick={() => !aiLoading && setImgPicker(null)}
+        >
+          <div className="demo-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="demo-modal-header">
+              <p className="demo-modal-title">{imgPicker.label}</p>
+              <button
+                className="demo-modal-close"
+                onClick={() => !aiLoading && setImgPicker(null)}
+                disabled={aiLoading}
+              >
+                <X style={{ width: 14, height: 14 }} />
+              </button>
+            </div>
+
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              style={{ display: "none" }}
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleFileUpload(f);
+              }}
+            />
+            <button
+              className="demo-modal-upload-btn"
+              onClick={() => fileRef.current?.click()}
+              disabled={aiLoading}
+            >
+              Upload from device
+            </button>
+
+            <div className="demo-modal-divider">
+              <span>or generate with AI</span>
+            </div>
+
+            <div className="demo-modal-ai-row">
+              <input
+                type="text"
+                placeholder="e.g. artisan sourdough on a wooden board"
+                value={aiPrompt}
+                onChange={(e) => setAiPrompt(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleAIGenerate()}
+                disabled={aiLoading}
+                className="demo-modal-input"
+                autoFocus
+              />
+              <button
+                className="demo-modal-generate-btn"
+                onClick={handleAIGenerate}
+                disabled={aiLoading || !aiPrompt.trim()}
+              >
+                {aiLoading ? (
+                  <span className="demo-spinner" />
+                ) : (
+                  <Wand2 style={{ width: 13, height: 13 }} />
+                )}
+                {aiLoading ? "Generating…" : "Generate"}
+              </button>
+            </div>
+            {aiLoading && (
+              <p className="demo-modal-hint">
+                This takes 15–30 seconds — hang tight.
+              </p>
+            )}
+            {aiError && <p className="demo-modal-error">{aiError}</p>}
+          </div>
+        </div>
+      )}
+
+      {/* ── Panels ────────────────────────────────────────────── */}
       {panel === "theme" && (
         <div className="demo-panel">
           <p className="demo-panel-label">Brand colour</p>
@@ -449,7 +657,7 @@ export default function DemoEditor() {
         </div>
       )}
 
-      {/* Toolbar */}
+      {/* ── Toolbar ───────────────────────────────────────────── */}
       <div className="demo-toolbar" onClick={() => setPanel(null)}>
         <span className="demo-badge">● Demo</span>
 
@@ -480,11 +688,25 @@ export default function DemoEditor() {
           onClick={(e) => {
             e.stopPropagation();
             setEditMode((v) => !v);
+            if (imgMode) setImgMode(false);
             setPanel(null);
           }}
         >
           <Pencil className="demo-icon" />
           Edit text
+        </button>
+
+        <button
+          className={`demo-btn${imgMode ? " demo-btn-active" : ""}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            setImgMode((v) => !v);
+            if (editMode) setEditMode(false);
+            setPanel(null);
+          }}
+        >
+          <Camera className="demo-icon" />
+          Photos
         </button>
 
         <button
@@ -512,8 +734,7 @@ export default function DemoEditor() {
         }
         .demo-badge {
           margin-right: 8px; font-size: 11px; font-weight: 600;
-          color: #6ee7b7; letter-spacing: 0.05em;
-          white-space: nowrap;
+          color: #6ee7b7; letter-spacing: 0.05em; white-space: nowrap;
         }
         .demo-btn {
           display: flex; align-items: center; gap: 5px;
@@ -521,14 +742,14 @@ export default function DemoEditor() {
           border: 1px solid rgba(255,255,255,0.12);
           background: rgba(255,255,255,0.05);
           color: rgba(255,255,255,0.75); font-size: 12px; font-weight: 500;
-          cursor: pointer; transition: all 0.15s;
-          white-space: nowrap;
+          cursor: pointer; transition: all 0.15s; white-space: nowrap;
         }
         .demo-btn:hover { background: rgba(255,255,255,0.12); color: white; }
         .demo-btn-active { background: rgba(99,102,241,0.3) !important; border-color: rgba(99,102,241,0.6) !important; color: white !important; }
         .demo-btn-reset { margin-left: auto; border-color: rgba(239,68,68,0.3); color: rgba(239,68,68,0.8); }
         .demo-btn-reset:hover { background: rgba(239,68,68,0.15); color: #f87171; border-color: rgba(239,68,68,0.5); }
         .demo-icon { width: 13px; height: 13px; flex-shrink: 0; }
+
         .demo-panel {
           position: fixed; bottom: 48px; left: 16px; z-index: 9999;
           background: rgba(10,10,10,0.96); backdrop-filter: blur(12px);
@@ -550,9 +771,92 @@ export default function DemoEditor() {
         .demo-font-btn { text-align: left; padding: 7px 10px; border-radius: 6px; border: 1px solid transparent; background: transparent; color: rgba(255,255,255,0.7); font-size: 14px; cursor: pointer; transition: all 0.15s; }
         .demo-font-btn:hover { background: rgba(255,255,255,0.08); color: white; }
         .demo-font-btn-active { background: rgba(99,102,241,0.2); border-color: rgba(99,102,241,0.4); color: white; }
+
         [data-demo-edit].demo-editable { outline: 2px dashed rgba(99,102,241,0.6); outline-offset: 3px; border-radius: 4px; }
         [data-demo-edit].demo-editable:hover { outline-color: rgba(99,102,241,1); background: rgba(99,102,241,0.05); }
         [data-demo-edit].demo-editable:focus { outline-color: rgba(99,102,241,1); outline-style: solid; }
+
+        /* Image edit overlays */
+        [data-demo-img] { position: relative; }
+        .demo-img-overlay {
+          position: absolute; inset: 0; z-index: 25;
+          cursor: pointer;
+          border: 2px solid rgba(99,102,241,0.75);
+          border-radius: inherit;
+          background: transparent;
+          display: flex; align-items: center; justify-content: center;
+          transition: background 0.15s;
+        }
+        .demo-img-overlay:hover { background: rgba(0,0,0,0.52); }
+        .demo-img-overlay-label {
+          opacity: 0; color: white; font-size: 12px; font-weight: 600;
+          letter-spacing: 0.03em; padding: 6px 14px;
+          background: rgba(99,102,241,0.9); border-radius: 6px;
+          pointer-events: none; transition: opacity 0.15s;
+          white-space: nowrap;
+        }
+        .demo-img-overlay:hover .demo-img-overlay-label { opacity: 1; }
+
+        /* Image picker modal */
+        .demo-modal-backdrop {
+          position: fixed; inset: 0; z-index: 99999;
+          background: rgba(0,0,0,0.65);
+          display: flex; align-items: center; justify-content: center;
+          padding: 16px;
+        }
+        .demo-modal {
+          background: #141414; border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 16px; padding: 20px; width: 100%; max-width: 420px;
+          animation: demo-slide-up 0.15s ease;
+        }
+        .demo-modal-header {
+          display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+        }
+        .demo-modal-title { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); }
+        .demo-modal-close {
+          background: none; border: none; color: rgba(255,255,255,0.4);
+          cursor: pointer; padding: 2px; display: flex; align-items: center;
+          border-radius: 4px; transition: color 0.15s;
+        }
+        .demo-modal-close:hover { color: white; }
+        .demo-modal-upload-btn {
+          width: 100%; padding: 11px; border-radius: 8px;
+          border: 1px dashed rgba(255,255,255,0.2); background: rgba(255,255,255,0.04);
+          color: rgba(255,255,255,0.7); font-size: 13px; cursor: pointer; transition: all 0.15s;
+        }
+        .demo-modal-upload-btn:hover { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.35); color: white; }
+        .demo-modal-upload-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .demo-modal-divider {
+          display: flex; align-items: center; gap: 10px; margin: 14px 0;
+          color: rgba(255,255,255,0.25); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em;
+        }
+        .demo-modal-divider::before, .demo-modal-divider::after {
+          content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1);
+        }
+        .demo-modal-ai-row { display: flex; gap: 8px; }
+        .demo-modal-input {
+          flex: 1; padding: 9px 12px; border-radius: 8px;
+          background: rgb(31,41,55); border: 1px solid rgb(55,65,81);
+          color: white; font-size: 13px; outline: none; min-width: 0;
+        }
+        .demo-modal-input:focus { border-color: rgb(99,102,241); }
+        .demo-modal-input:disabled { opacity: 0.5; }
+        .demo-modal-generate-btn {
+          display: flex; align-items: center; gap: 6px; padding: 9px 14px;
+          border-radius: 8px; background: rgb(99,102,241); border: none;
+          color: white; font-size: 13px; font-weight: 500; cursor: pointer;
+          transition: background 0.15s; white-space: nowrap; flex-shrink: 0;
+        }
+        .demo-modal-generate-btn:hover:not(:disabled) { background: rgb(79,82,221); }
+        .demo-modal-generate-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+        .demo-spinner {
+          width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0;
+          border: 2px solid rgba(255,255,255,0.3); border-top-color: white;
+          animation: demo-spin 0.6s linear infinite; display: inline-block;
+        }
+        @keyframes demo-spin { to { transform: rotate(360deg); } }
+        .demo-modal-hint { margin-top: 10px; font-size: 11px; color: rgba(255,255,255,0.35); }
+        .demo-modal-error { margin-top: 10px; font-size: 12px; color: #f87171; }
       `}</style>
     </>
   );

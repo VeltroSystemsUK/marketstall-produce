@@ -11,6 +11,7 @@ import { useBasket } from "@/contexts/BasketContext";
 interface ProductCardProps {
   product: Product;
   view?: "grid" | "list";
+  demoKey?: string;
 }
 
 const DIETARY_ICONS: Record<string, string> = {
@@ -24,6 +25,7 @@ const DIETARY_ICONS: Record<string, string> = {
 export default function ProductCard({
   product,
   view = "grid",
+  demoKey,
 }: ProductCardProps) {
   const { addItem } = useBasket();
 
@@ -110,7 +112,11 @@ export default function ProductCard({
       href={`/shop/${product.id}`}
       className="card-hover group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5"
     >
-      <div className="relative h-48 overflow-hidden bg-forest-50">
+      <div
+        className="relative h-48 overflow-hidden bg-forest-50"
+        data-demo-img={demoKey}
+        data-demo-img-label="Product photo"
+      >
         <Image
           src={product.images[0]}
           alt={product.name}
@@ -136,7 +142,10 @@ export default function ProductCard({
             {product.producerName}
           </p>
         )}
-        <h3 className="mb-1 font-display font-semibold text-gray-900 leading-snug">
+        <h3
+          className="mb-1 font-display font-semibold text-gray-900 leading-snug"
+          data-demo-edit={demoKey ? `${demoKey}-name` : undefined}
+        >
           {product.name}
         </h3>
 
@@ -151,7 +160,7 @@ export default function ProductCard({
         )}
 
         <div className="mt-auto flex items-center justify-between pt-2">
-          <div>
+          <div data-demo-edit={demoKey ? `${demoKey}-price` : undefined}>
             <span className="text-lg font-bold text-gray-900">
               {formatPrice(product.price)}
             </span>
